@@ -4,9 +4,14 @@ using Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddCors(options => {
+    options.AddPolicy("CorsPolicy", options => {
+        options.AllowAnyMethod()
+            .AllowAnyHeader()
+            .WithOrigins("http://localhost:3000");
+    });
+});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -38,6 +43,7 @@ using (var scope = app.Services.CreateAsyncScope())
     }
 }
 
+app.UseCors("CorsPolicy");
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
