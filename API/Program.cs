@@ -1,22 +1,14 @@
 using Persistance;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
+using API.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
-builder.Services.AddCors(options => {
-    options.AddPolicy("CorsPolicy", options => {
-        options.AllowAnyMethod()
-            .AllowAnyHeader()
-            .WithOrigins("http://localhost:3000");
-    });
-});
+builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? "Data source=reactivities.db";
-builder.Services.AddSqlite<DataContext>(connectionString);
 
 var app = builder.Build();
 
