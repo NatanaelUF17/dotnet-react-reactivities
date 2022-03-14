@@ -10,7 +10,7 @@ interface Props {
 }
 
 function ActivityList({ activities, selectActivity, deleteActivity, isSubmitting }: Props) {
-    
+
     const [target, setTarget] = useState('');
 
     function handleDeleteActivity(event: SyntheticEvent<HTMLButtonElement>, id: string) {
