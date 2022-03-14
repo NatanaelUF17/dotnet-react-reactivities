@@ -1,15 +1,12 @@
+import { observer } from "mobx-react-lite";
 import React, { SyntheticEvent, useState } from "react";
 import { Button, Item, Label, Segment } from "semantic-ui-react";
-import { Activity } from "../../../app/models/activity";
+import { useStore } from "../../../app/stores/store";
 
-interface Props {
-    activities: Activity[];
-    isSubmitting: boolean;
-    selectActivity: (id: string) => void;
-    deleteActivity: (id: string) => void;
-}
 
-function ActivityList({ activities, selectActivity, deleteActivity, isSubmitting }: Props) {
+function ActivityList() {
+    const { activityStore } = useStore();
+    const { deleteActivity, activitiesByDate, isLoading } = activityStore;
 
     const [target, setTarget] = useState('');
 
@@ -21,7 +18,7 @@ function ActivityList({ activities, selectActivity, deleteActivity, isSubmitting
     return (
         <Segment>
             <Item.Group divided>
-                {activities.map(activity => (
+                {activitiesByDate.map(activity => (
                     <Item key={activity.id}>
                         <Item.Content>
                             <Item.Header as={'a'}>{activity.title}</Item.Header>
@@ -32,14 +29,14 @@ function ActivityList({ activities, selectActivity, deleteActivity, isSubmitting
                             </Item.Description>
                             <Item.Extra>
                                 <Button
-                                    onClick={() => selectActivity(activity.id)}
+                                    onClick={() => activityStore.selectActivity(activity.id)}
                                     floated="right"
                                     content="View"
                                     color="blue" />
                                 <Button
                                     onClick={(event) => handleDeleteActivity(event, activity.id)}
                                     name={activity.id}
-                                    loading={isSubmitting && target === activity.id}
+                                    loading={isLoading && target === activity.id}
                                     floated="right"
                                     content="Delete"
                                     color="red" />
@@ -53,4 +50,4 @@ function ActivityList({ activities, selectActivity, deleteActivity, isSubmitting
     );
 }
 
-export default ActivityList;
+export default observer(ActivityList);
