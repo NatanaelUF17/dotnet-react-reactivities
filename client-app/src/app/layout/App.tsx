@@ -1,27 +1,37 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Container } from 'semantic-ui-react';
 import NavBar from './components/NavBar';
 import ActivityDashboard from '../../features/activities/dashboard/ActivityDashboard';
-import Loading from './components/Loading';
-import { useStore } from '../stores/store';
 import { observer } from 'mobx-react-lite';
+import HomePage from '../../features/home/homePage';
+import ActivityForm from '../../features/activities/form/ActivityForm';
+import { Route, useLocation } from 'react-router-dom';
+import ActivityDetails from '../../features/activities/details/ActivityDetails';
 
 function App() {
 
-  const { activityStore } = useStore();
-
-  useEffect(() => {
-    activityStore.loadActivities();
-  }, [activityStore]);
-
-  if (activityStore.isInitialLoading) return <Loading content='Loading App...' />
+  const location = useLocation();
 
   return (
     <>
-      <NavBar />
-      <Container style={{ marginTop: '7em' }}>
-        <ActivityDashboard />
-      </Container>
+      <Route exact path='/' component={HomePage} />
+
+      <Route
+        path={'/(.+)'}
+        render={() => (
+          <>
+            <NavBar />
+            <Container style={{ marginTop: '7em' }}>
+              <Route exact path='/activities' component={ActivityDashboard} />
+              <Route path='/activities/:id' component={ActivityDetails} />
+              <Route
+                key={location.key}
+                path={['/activity/form/create', '/activity/form/edit/:id']}
+                component={ActivityForm} />
+            </Container>
+          </>
+        )}
+      />
     </>
   );
 }
