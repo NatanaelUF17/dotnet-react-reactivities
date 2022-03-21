@@ -2,15 +2,22 @@ using Persistance;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 using API.Extensions;
+using FluentValidation.AspNetCore;
+using Application.Activities;
+using API.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddFluentValidation(config => {
+    config.RegisterValidatorsFromAssemblyContaining<Create>();
+});
 builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
