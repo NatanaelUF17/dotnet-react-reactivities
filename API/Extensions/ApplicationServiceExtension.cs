@@ -10,8 +10,10 @@ namespace API.Extensions
         public static IServiceCollection AddApplicationServices(this IServiceCollection services, 
             IConfiguration configuration)
         {
-            services.AddCors(options => {
-                options.AddPolicy("CorsPolicy", options => {
+            services.AddCors(options => 
+            {
+                options.AddPolicy("CorsPolicy", options => 
+                {
                     options.AllowAnyMethod()
                         .AllowAnyHeader()
                         .WithOrigins("http://localhost:3000");
