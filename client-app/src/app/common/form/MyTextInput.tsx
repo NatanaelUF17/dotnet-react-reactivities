@@ -6,9 +6,10 @@ interface Props {
     placeholder: string;
     name: string;
     label?: string;
+    type?: string;
 }
 
-function MyTextInput({ placeholder, name, label }: Props) {
+function MyTextInput({ placeholder, name, label, type }: Props) {
     
     const [field, meta] = useField(name);
     
@@ -18,7 +19,8 @@ function MyTextInput({ placeholder, name, label }: Props) {
             <input 
                 {...field} 
                 placeholder={placeholder}
-                name={name} 
+                name={name}
+                type={type} 
             />
             {meta.touched && meta.error ? (
                 <Label basic color='red'>{meta.error}</Label>
