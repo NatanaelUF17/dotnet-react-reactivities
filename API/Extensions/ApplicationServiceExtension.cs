@@ -1,5 +1,7 @@
 using Application.Activities;
 using Application.Core;
+using Application.Interfaces;
+using Infrastructure.Security;
 using MediatR;
 using Persistance;
 
@@ -19,11 +21,13 @@ namespace API.Extensions
                         .WithOrigins("http://localhost:3000");
                 });
             });
+
+             var connectionString = configuration.GetConnectionString("DefaultConnection") ?? "Data source=reactivities.db";
+            services.AddSqlite<DataContext>(connectionString);
+
             services.AddMediatR(typeof(List.Handler).Assembly);
             services.AddAutoMapper(typeof(MappingProfiles));
-
-            var connectionString = configuration.GetConnectionString("DefaultConnection") ?? "Data source=reactivities.db";
-            services.AddSqlite<DataContext>(connectionString);
+            services.AddScoped<IUserAccessor, UserAccessor>();
        
             return services;
         }
