@@ -12,26 +12,18 @@ import MyTextArea from "../../../app/common/form/MyTextArea";
 import MySelectInput from "../../../app/common/form/MySelectInput";
 import { categoryOptions } from "../../../app/common/options/categoryOptions";
 import MyDateInput from "../../../app/common/form/MyDateInput";
-import { Activity } from "../../../app/models/activity";
+import { ActivityFormValues } from "../../../app/models/activity";
 
 
 function ActivityForm() {
 
     const { activityStore } = useStore();
-    const { createActivity, updateActivity, isLoading,
+    const { createActivity, updateActivity,
         loadActivity, isInitialLoading } = activityStore;
     const { id } = useParams<{ id: string }>();
     const history = useHistory();
 
-    const [activity, setActivity] = useState<Activity>({
-        id: '',
-        title: '',
-        category: '',
-        description: '',
-        date: null,
-        city: '',
-        venue: ''
-    });
+    const [activity, setActivity] = useState<ActivityFormValues>(new ActivityFormValues());
 
     const validationSchema = Yup.object({
         title: Yup.string().required('The activity title is required'),
@@ -45,12 +37,12 @@ function ActivityForm() {
     useEffect(() => {
         if (id) {
             loadActivity(id)
-                .then(activity => setActivity(activity!));
+                .then(activity => setActivity(new ActivityFormValues(activity)));
         }
     }, [id, loadActivity]);
 
-    function handleFormSubmit(activity: Activity) {
-        if (activity.id.length === 0) {
+    function handleFormSubmit(activity: ActivityFormValues) {
+        if (!activity.id) {
             let newActivity = {
                 ...activity,
                 id: uuid()
@@ -97,7 +89,7 @@ function ActivityForm() {
                             placeholder="Venue"
                             name="venue" />
                         <Button
-                            loading={isLoading}
+                            loading={isSubmitting}
                             floated="right"
                             disabled={isSubmitting || !dirty || !isValid}
                             positive
