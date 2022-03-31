@@ -6,6 +6,7 @@ import { store } from "./store";
 
 class ProfileStore {
   profile: Profile | null = null;
+  isUpdatingProfile: boolean = false;
   isLoadingProfile: boolean = false;
   isUploading: boolean = false;
   isSettingMainPhoto: boolean = false;
@@ -34,6 +35,25 @@ class ProfileStore {
       console.log(error);
       runInAction(() => {
         this.isLoadingProfile = false;
+      });
+    }
+  }
+
+  updateProfile = async (profile: Partial<Profile>) => {
+    this.isUpdatingProfile = true;
+    try {
+      await agent.Profiles.updateProfile(profile);
+      runInAction(() => {
+        if (profile.displayName && profile.displayName !== store.userStore.user?.displayName) {
+          store.userStore.setDisplayName(profile.displayName);
+        }
+        this.profile = {...this.profile, ...profile as Profile};
+        this.isUpdatingProfile = false;
+      });
+    } catch (error) {
+      console.log(error);
+      runInAction(() => {
+        this.isUpdatingProfile = false;
       });
     }
   }
