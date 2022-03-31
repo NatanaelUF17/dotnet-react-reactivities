@@ -1,3 +1,4 @@
+import { Photo } from "./photo";
 import { User } from "./user";
 
 export interface Profile {
@@ -5,6 +6,7 @@ export interface Profile {
     displayName: string;
     image?: string;
     bio?: string;
+    photos?: Photo[];
 }
 
 export class Profile implements Profile {

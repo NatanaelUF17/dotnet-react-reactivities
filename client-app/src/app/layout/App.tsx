@@ -15,6 +15,7 @@ import LoginForm from '../../features/users/LoginForm';
 import { useStore } from '../stores/store';
 import Loading from './components/Loading';
 import ModalContainer from '../common/modals/ModalContainer';
+import ProfilePage from '../../features/profiles/ProfilePage';
 
 function App() {
 
@@ -51,6 +52,7 @@ function App() {
                   key={location.key}
                   path={['/activity/form/create', '/activity/form/edit/:id']}
                   component={ActivityForm} />
+                <Route path='/profile/:username' component={ProfilePage}/>
                 <Route path='/errors' component={TestErrors} />
                 <Route path='/server-error' component={ServerError} />
                 <Route path='/login' component={LoginForm} />

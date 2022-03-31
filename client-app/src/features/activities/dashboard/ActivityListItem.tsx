@@ -25,17 +25,17 @@ function ActivityListItem({ activity }: Props) {
                 <Item.Group>
                     <Item>
                         <Item.Image
-                            style={{ marginBottom: 5 }} 
+                            style={{ marginBottom: 5 }}
                             size='tiny' 
                             circular 
-                            src='/assets/user.png' 
+                            src={activity.host?.image || '/assets/user.png'}
                         />
                         <Item.Content>
                             <Item.Header as={Link} to={`/activities/${activity.id}`}>
                                 {activity.title}
                             </Item.Header>
                             <Item.Description>
-                                Hosted by Bob {activity.host?.displayName}
+                                Hosted by <Link to={`/profile/${activity.hostUsername}`}>{activity.host?.displayName}</Link>
                             </Item.Description>
                             {activity.isHost && (
                                 <Item.Description>
