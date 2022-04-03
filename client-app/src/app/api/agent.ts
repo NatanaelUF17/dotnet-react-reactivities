@@ -2,9 +2,11 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 import { toast } from "react-toastify";
 import { history } from "../..";
 import { Activity, ActivityFormValues } from "../models/activity";
+import { PaginatedResult } from "../models/pagination";
 import { Photo } from "../models/photo";
 import { Profile } from "../models/profile";
 import { User, UserFormValues } from "../models/user";
+import { UserActivity } from "../models/userActivity";
 import { store } from "../stores/store";
 
 const sleep = (delay: number) => {
@@ -25,7 +27,11 @@ axios.interceptors.request.use(config => {
 
 axios.interceptors.response.use(async (response) => {
     await sleep(1000);
-    return response;
+    const pagination = response.headers['pagination'];
+    if (pagination) {
+      response.data = new PaginatedResult(response.data, JSON.parse(pagination));
+    }
+    return response as AxiosResponse<PaginatedResult<any>>;
 }, (error: AxiosError) => {
   const { data, status, config } = error.response!;
   switch (status) {
@@ -72,7 +78,8 @@ const requests = {
 };
 
 const Activities = {
-  list: () => requests.get<Activity[]>("/activities"),
+  list: (params: URLSearchParams) => axios.get<PaginatedResult<Activity[]>>("/activities", { params })
+    .then(responseBody),
   details: (id: string) => requests.get<Activity>(`/activities/${id}`),
   create: (activity: ActivityFormValues) => requests.post<void>('/activities', activity),
   update: (activity: ActivityFormValues) => requests.put<void>(`/activities/${activity.id}`, activity),
@@ -100,7 +107,9 @@ const Profiles = {
     return axios.post<Photo>('photos', formData, {
       headers: { 'Content-type': 'multipart/form-data' }
     });
-  }
+  },
+  listActivities: (username: string, predicate: string) =>
+    requests.get<UserActivity[]>(`/profiles/${username}/activities?predicate=${predicate}`)
 }
 
 const agent = {
