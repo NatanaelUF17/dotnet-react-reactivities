@@ -36,7 +36,6 @@ namespace Application.Comments
                 _userAccessor = userAccessor;
                 _mapper = mapper;
                 _context = context;
-
             }
 
             public async Task<Result<CommentDTO>> Handle(Command request, CancellationToken cancellationToken)
