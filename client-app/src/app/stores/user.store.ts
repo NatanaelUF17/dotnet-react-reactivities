@@ -72,6 +72,15 @@ class UserStore {
             this.user.displayName = displayName;
         }
     }
+
+    facebookLogin = () => {
+        window.FB.login((response: any) => {
+            agent.Account.facebookLogin(response.authResponse.accessToken)
+                .then(user => console.log(user));
+        }, {
+            scope: 'public_profile, email'
+        });
+    }
  }
 
 export default UserStore;
